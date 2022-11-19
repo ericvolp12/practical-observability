@@ -7,5 +7,5 @@ help:
 build: ## Run mdbook to build content
 	docker run --rm -v $(PWD):/book peaceiris/mdbook:v0.4.21 build
 
-dev: ## Run mdbook locally and serve content at http://localhost:3050/ with live reloading
-	docker run --rm -it -v $(PWD):/book -p 3050:3000 peaceiris/mdbook:v0.4.21 serve -n 0.0.0.0
+dev: ## Run mdbook locally and serve content at http://localhost:3000/ with live reloading
+	docker run --rm -it -v $(PWD):/book -p 3000:3000 peaceiris/mdbook:v0.4.21 serve -n 0.0.0.0

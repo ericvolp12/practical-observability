@@ -149,6 +149,88 @@ Because counters are monotonically increasing values, even though scrape interva
 
 #### Querying Counter Metrics
 
+To explore Counter metrics, let's build a Prometheus query in [PromQL](https://prometheus.io/docs/prometheus/latest/querying/basics/), Prometheus's Query Language.
+
+To start, we can query our Prometheus instance for our counter metric by name: `process_cpu_seconds_total`.
+
+![A screenshot of the Prometheus Web UI searching for "process_cpu_seconds_total"](images/counter_prom_1.png)
+
+We can see that this given Prometheus instance has eight series being returned, with each series in the form:
+```
+process_cpu_seconds_total{instance="<some_address>", job="<some_job_name>"}
+```
+
+Prometheus represents metrics in PromQL using the following format:
+
+```
+<metric_name>{<label_1_key>="<label_1_value>", <label_2_key>="<label_2_value>", ..., <label_n_key>="<label_n_value>"}
+```
+
+In our example, we see two different labels, `instance` and `job`. The `instance` label has eight distinct values, as does the `job` label. Prometheus generates a new time series for each unique set of label values it encounters, so while the theoretical dimensionality of this metric may be `1 * 8 * 8 = 64`, in practice there are only eight series being maintained.
+
+Let's select one of these series to explore further.
+
+In PromQL we can narrow the time series returned by our query by specifying filters for labels. The example below restricts the above results to only include those series where the `instance` label has a value that starts with `localhost`. To do this we use the `=~` operator on the `instance` label to filter by a regex that matches anything starting with `localhost`.
+
+```
+process_cpu_seconds_total{instance=~"localhost.*"}
+```
+
+![A screenshot of the Prometheus Web UI searching for "process_cpu_seconds_total{instance=~"localhost.*"}"](images/counter_prom_2.png)
+
+We can further filter by `job` to end up with a single series trivially using the `=` operator. Let's filter for the `prometheus` job using the following query:
+
+```
+process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}
+```
+
+_Note that we could technically have just used the `job` query here since there is only one series with a `job` label with value `prometheus`._
+
+![A screenshot of the Prometheus Web UI searching for "process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}"](images/counter_prom_3.png)
+
+From here, we can click on the `Graph` tab to view our metric in Prometheus's built-in graphing tool, though we'll go over building more interesting graphs in Grafana later.
+
+![A screenshot of the Prometheus Web UI graphing "process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}" with a 1 hour window](images/counter_prom_4.png)
+
+As this is a Counter metric, we expect to see a monotonically increasing graph, which is quite clear, but why does the line look perfectly smooth if we didn't do anything to interpolate values? If we set the time range to something smaller than an hour, such as five minutes, the graph starts to look a bit different.
+
+![A screenshot of the Prometheus Web UI graphing "process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}" with a 5 minute window](images/counter_prom_5.png)
+
+Now we can see the bumpiness we would expect of many discrete observations spaced an equal amount of time apart.
+
+An even more intense zoom reveals the gap between observations to be five seconds for our given metric. Each stair step has a length of four seconds and then the line up to the next stair has a length of one second meaning our observations are separated by a total of five seconds.
+
+![A screenshot of the Prometheus Web UI graphing "process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}" with a 10 second window](images/counter_prom_6.png)
+
+While this graph is neat, it doesn't exactly make much sense as a raw series. Total CPU Seconds used by a service is interesting but it would be much more useful to see it as a rate of CPU usage in a format like CPU Seconds per Second. Thankfully, PromQL can help us derive a rate from this metric as follows:
+
+```
+rate(process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}[1m])
+```
+
+In this query we're making use of the [`rate()`](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) Query Function in PromQL which calculates the "per-second average rate of increase in the time series in the range vector". To break that down a bit, the "range vector" in our query is `[1m]`, meaning for each observation, we are grabbing the value of the metric at that time, then the values of previous observations for that metric from one minute prior to the selected observation. Once we have that list of values, we calculate the rate of increase between each successive observation, then average it out over the one minute period.
+
+Consider the following observations for a given counter metric, `requests`, in the form `[time, counter_value]`:
+
+```
+[0, 0], [10, 4], [20, 23], [30, 31], [40, 45], [50, 63], [60, 74], [70, 102]
+```
+
+If we wanted to take the `rate(requests{}[30s])` at the point `[40, 45]` we would grab 30 seconds worth of observations, so all those going back to `[10, 4]`. Then we calculate the increase between each successive observation:
+- `[10, 4]` to `[20, 23]` -> `23 - 4 = 19` 
+- `[20, 23]` to `[30, 31]` -> `31 - 23 = 8`
+- `[30, 31]` to `[40, 45]` -> `45 - 31 = 14`
+
+Since our observations are evenly spaced, we can average the rate of increase as:
+\\[ \frac{19+8+4}{3} = 10.\overline{33}\\]
+
+That only gives us the `rate(requests{}[30s]` at the `time=40` point, but that process is repeated for every observation visible at the resolution we're requesting.
+
+The result of this operation on our `process_cpu_seconds_total` metric is graphed below:
+
+![A screenshot of the Prometheus Web UI graphing "rate(process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}[1m])" with a 1 hour window](images/counter_prom_7.png)
+
+From this graph we can see that in the past hour our service peaks its usage at a little over `0.04` CPU Seconds per Second or around `4%` of a single CPU core.
 
 ## What _should_ I record with Metrics?
 
