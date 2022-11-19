@@ -1,0 +1,8 @@
+[book]
+authors = ["Eric Volpert"]
+language = "en"
+multilingual = false
+src = "src"
+title = "IDE Knowledgebase"
+[output.html]
+mathjax-support = true
