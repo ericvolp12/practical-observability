@@ -86,7 +86,7 @@ While this graph is neat, it doesn't exactly make much sense as a raw series. To
 rate(process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}[1m])
 ```
 
-In this query we're making use of the [`rate()`](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) Query Function in PromQL which calculates the "per-second average rate of increase in the time series in the range vector". This is effectively the slope of the line of the raw observed value with a bit of added nuance. To break that down a bit, the "range vector" in our query is `[1m]`, meaning for each observation, we are grabbing the value of the metric at that time, then the values of previous observations for that metric from one minute prior to the selected observation. Once we have that list of values, we calculate the rate of increase between each successive observation, then average it out over the one minute period.
+In this query we're making use of the [`rate()`](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) Query Function in PromQL which calculates the "per-second average rate of increase in the time series in the range vector". This is effectively the slope of the line of the raw observed value with a bit of added nuance. To break that down a bit, the "range vector" in our query is `[1m]`, meaning for each observation, we are grabbing the value of the metric at that time, then the values of previous observations for that metric from one minute prior to the selected observation. Once we have that list of values, we calculate the rate of increase between each successive observation, then average it out over the one minute period. For a monotonically increasing Counter value, we can simplify the equation by grabbing the first and last points in our range vector, grabbing the difference in values and dividing by the time between the two observations. Let's show it the hard way and then we can simplify.
 
 Consider the following observations for a given counter metric, `requests`, in the form `[time, counter_value]`:
 
@@ -99,10 +99,13 @@ If we wanted to take the `rate(requests{}[30s])` at the point `[40, 45]` we woul
 - `[20, 23]` to `[30, 31]` -> `31 - 23 = 8`
 - `[30, 31]` to `[40, 45]` -> `45 - 31 = 14`
 
-Since our observations are evenly spaced, we can average the rate of increase as:
-\\[ \frac{19+8+4}{3} = 10.\overline{33}\\]
+Since our observations are evenly spaced, we can average the per-second rate of increase as:
+\\[ \frac{19}{10} + \frac{8}{10} + \frac{14}{10} = 1.\overline{33}\\]
 
-That only gives us the `rate(requests{}[30s]` at the `time=40` point, but that process is repeated for every observation visible at the resolution we're requesting.
+As we're using a Counter, we can simplify the process by grabbing the first and last observations in the range and calculating the difference between them and divide by the number of seconds between the observations:
+\\[ \frac{45-4}{30} = 1.\overline{33}\\]
+
+That only gives us the `rate(requests{}[30s])` at the `time=40` point, but that process is repeated for every observation visible at the resolution we're requesting.
 
 The result of this operation on our `process_cpu_seconds_total` metric is graphed below:
 
