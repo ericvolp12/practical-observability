@@ -208,7 +208,7 @@ While this graph is neat, it doesn't exactly make much sense as a raw series. To
 rate(process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}[1m])
 ```
 
-In this query we're making use of the [`rate()`](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) Query Function in PromQL which calculates the "per-second average rate of increase in the time series in the range vector". To break that down a bit, the "range vector" in our query is `[1m]`, meaning for each observation, we are grabbing the value of the metric at that time, then the values of previous observations for that metric from one minute prior to the selected observation. Once we have that list of values, we calculate the rate of increase between each successive observation, then average it out over the one minute period.
+In this query we're making use of the [`rate()`](https://prometheus.io/docs/prometheus/latest/querying/functions/#rate) Query Function in PromQL which calculates the "per-second average rate of increase in the time series in the range vector". This is effectively the slope of the line of the raw observed value with a bit of added nuance. To break that down a bit, the "range vector" in our query is `[1m]`, meaning for each observation, we are grabbing the value of the metric at that time, then the values of previous observations for that metric from one minute prior to the selected observation. Once we have that list of values, we calculate the rate of increase between each successive observation, then average it out over the one minute period.
 
 Consider the following observations for a given counter metric, `requests`, in the form `[time, counter_value]`:
 
