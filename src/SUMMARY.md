@@ -6,4 +6,5 @@
       - [Labels](observability/metrics/labels.md)
       - [Metric Types](observability/metrics/types.md)
         - [Counters](observability/metrics/types/counters.md)
+        - [Gauges](observability/metrics/types/gauges.md)
 - [Local Development](localdev/localdev.md)

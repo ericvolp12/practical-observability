@@ -80,6 +80,8 @@ An even more intense zoom reveals the gap between observations to be five second
 
 ![A screenshot of the Prometheus Web UI graphing "process_cpu_seconds_total{instance=~"localhost.*", job="prometheus"}" with a 10 second window](images/counter_prom_6.png)
 
+### Range Vectors and the Rate Query
+
 While this graph is neat, it doesn't exactly make much sense as a raw series. Total CPU Seconds used by a service is interesting but it would be much more useful to see it as a rate of CPU usage in a format like CPU Seconds per Second. Thankfully, PromQL can help us derive a rate from this metric as follows:
 
 ```
