@@ -8,7 +8,7 @@ You will learn the theory behind different kinds of observability tools, how the
 
 ## Deployment
 
-The service is available at the following locations based on which environment you'd like to connect to:
+This book is deployed as a draft in GCS for now:
 
 | **Environment** | **Book Link**                                                                        |
 | --------------- | ------------------------------------------------------------------------------------ |
@@ -120,9 +120,9 @@ statefulset.apps/prometheus-kind-prometheus-kube-prome-prometheus       1/1     
 
 After the install you'll find:
 
-- Prometheus at `http://localhost:30000`
-- Grafana at `http://localhost:31000`
-- AlertManager at `http://localhost:32000`
+- Prometheus at [`http://localhost:30000`](http://localhost:30000)
+- Grafana at [`http://localhost:31000`](http://localhost:31000)
+- AlertManager at [`http://localhost:32000`](http://localhost:32000)
 
 Log into Grafana with the following credentials:
 
