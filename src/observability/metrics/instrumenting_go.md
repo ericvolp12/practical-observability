@@ -209,9 +209,9 @@ And we can see that the `POST` handler incremented its counter for the first tim
 
 #### Expanding our Instrumentation
 
-Let's add the additional metrics we discussed, we're still interested in understanding the response time for each endpoint as well as the status code of each request. We'll want to move our instrumentation to 
+Let's add the additional metrics we discussed, we're still interested in understanding the response time for each endpoint as well as the status code of each request.
 
-We could add an additional label to our existing `CounterVec` to record the status code of responses as follows:
+We can add an additional label to our existing `CounterVec` to record the status code of responses as follows:
 
 ```go
 //...
