@@ -353,7 +353,14 @@ By default, the Prometheus library will use the default bucket list `DefBuckets`
 var DefBuckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
 ```
 
-In our case, we can keep the default buckets as they are, but once we start measuring we might notice our responses are rather quick (since our service is just serving small amounts of data from memory) and may wish to tweak the buckets further. Defining the right buckets ahead of time can save you pain in the future wheen debugging issues that happen above or below the highest and lowest bucket thresholds. Remember the highest bucket being 10 seconds means we record any request that takes longer than 10 seconds as having taken >10 seconds, the lowest threshold being 5 milliseconds means we record any request that takes fewer than 5 milliseconds to serve as having taken <5 milliseconds.
+In our case, we can keep the default buckets as they are, but once we start measuring we might notice our responses are rather quick (since our service is just serving small amounts of data from memory) and may wish to tweak the buckets further. Defining the right buckets ahead of time can save you pain in the future when debugging observations that happen above the highest or below the lowest bucket thresholds. 
+
+Remember the highest bucket being 10 seconds means we record any request that takes longer than 10 seconds as having taken between 10 and +infinity seconds: 
+\\[ (10, +\infty]\ sec\\]
+
+The lowest threshold being 5 milliseconds means we record any request that takes fewer than 5 milliseconds to serve as having taken between 5 and 0 milliseconds:
+\\[ (0, 0.005]\ sec\\]
+
 
 Now we'll update our `handleUsers()` function to time the request duration and record the observations:
 
@@ -482,7 +489,7 @@ $ curl http://localhost:8080/metrics
 > userapi_request_latency_seconds_count{method="POST",path="/users",status="400"} 1
 ```
 
-In the response we can see three `Histograms` represented, one for `GET /users` with a `200` status, one for `POST /users` with a `200` status, and a third for `POST /users` with a `400` status.
+In the response we can see three `Histograms` represented, one for `GET /users` with a `200` status, a second for `POST /users` with a `200` status, and a third for `POST /users` with a `400` status.
 
 If we read the counts generated, we can see that each of our requests was too small for the bucket precision we chose. Prometheus records `Histogram` observations by incrementing the counter of every bucket that the observation fits in. 
 
@@ -511,7 +518,9 @@ Clearly this service is incredibly quick so if we want to accurately measure lat
 
 We can update our `HistogramVec` to track `milliseconds` instead of `seconds` and then using the same default buckets we'll be tracking from `0.005` milliseconds (which is 5 microseconds) to `10` milliseconds using the same `DefBuckets`.
 
-Go tracks `Milliseconds` as integers so we'll want to use the `Microseconds` value on our `time.Duration`, cast it to a `float64`, and divide it by `1000` to make it into a `float64` of milliseconds.
+Go tracks `Milliseconds` on a `time.Duration` as an `int64` value so to get the required precision we'll want to use the `Microseconds` value on our `time.Duration` (which is also an `int64`), cast it to a `float64`, and divide it by `1000` to make it into a `float64` of milliseconds.
+
+Make sure to cast the `Microseconds` to a `float64` before dividing by `1000` otherwise you'll end up performing integer division on the value and get rounded to the closest whole millisecond (which is zero for the requests we've seen so far).
 
 ```go
 //...
@@ -593,4 +602,4 @@ Incredible! We can now spot the bucket boundary where our requests fall by looki
 
 Our `GET /users 200` requests seem to have both fallen in the `(0.025 - 0.05]` millisecond bucket, which would clock them somewhere between `25` and `50` microseconds. The `POST /users 200` and `POST /users 400` requests fall within the `(0.05 - 0.1]` millisecond bucket which clocks them between `50` and `100` microseconds.
 
-If we look at the `sum` and `count` values for each `Histogram` this time around we can see that the `POST` requests each took around `85` microseconds to handle, and the `GET` request took around `41` microseconds to handle. These results validate our analysis of the Histogram buckets and how we interpret them.
+If we look at the `sum` and `count` values for each `Histogram` this time around we can see that the `POST` requests each took around `85` microseconds to handle, and the `GET` request took around `41` microseconds to handle. These results validate our analysis and interpretation of the Histogram buckets.
