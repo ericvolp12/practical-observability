@@ -326,7 +326,7 @@ $ curl http://localhost:8080/metrics
 
 Fantastic! Now we have **which routes** are called in a time period, **how many times** they're called, and **what status code** they return. All we're missing is **how long** they take to handle, which will require us to use a `Histogram` instead of a `Counter`.
 
-To track response latency, we can refactor our existing metric instead of creating another one since `Histograms` also track the total number of observations in the series, they act as a `CounterVec` with a built-in label for the top boundary of the bucket.
+To track response latency, we can refactor our existing metric instead of creating another one since `Histograms` also track the total number of observations in the series, they act as a `CounterVec` with a built-in label (`le`) for the upper boundary of each bucket.
 
 Let's redefine our `reqCounter` and rename it to `reqLatency`:
 
