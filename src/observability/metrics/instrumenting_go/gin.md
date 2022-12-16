@@ -219,9 +219,17 @@ If we dissect our histogram results like in the simplified example, the `GET /us
 
 ## Conclusion
 
-While this example shows we can write our own instrumentation middleware in a few lines of extra code when starting up our Gin server, there is an off-the-shelf solution for Gin that requires even less configuration in the form of the [`go-gin-prometheus`](https://github.com/ericvolp12/go-gin-prometheus) library. I maintain a fork of this library that has a few quality-of-life changes to avoid [cardinality explosions](../labels.md#label-cardinality) around paths, and instrumenting your Gin service becomes as easy as:
+This example shows we can write our own instrumentation middleware in a few lines of extra code when starting up our Gin server. We're able to tune our measurements to ensure the metric we care about falls somewhere in the middle of our histogram buckets so we can keep precise measurements, and we can easily add additional metrics to our custom middleware if we want to track additional values for each request.
+
+There is an off-the-shelf solution for Gin that requires even less configuration in the form of the [`go-gin-prometheus`](https://github.com/ericvolp12/go-gin-prometheus) library. I maintain a fork of this library that has a few quality-of-life changes to avoid [cardinality explosions](../labels.md#label-cardinality) around paths, and instrumenting your Gin service becomes as easy as:
 
 ```go
+import (
+	//...
+	"github.com/ericvolp12/go-gin-prometheus"
+	//...
+)
+
 func main(){
     r := gin.New()
 	p := ginprometheus.NewPrometheus("gin")
@@ -230,4 +238,8 @@ func main(){
 }
 ```
 
-This middleware tracks request counts, duration, and size, as well as response sizes. I would recommend using it unless you have a compelling reason to write your own instrumentation middleware or need to track additional metrics in your API that aren't just related to requests.
+This middleware tracks request counts, duration, and size, as well as response sizes. We'll explore the limitations of off-the-shelf instrumentation middlewares in the next section on Echo, but to summarize: sometimes the default units of measurement and bucket spacings of off-the-shelf instrumentation middleware are insufficient to precisely measure the response times of our routes and the sizes of requests and responses.
+
+The `go-gin-prometheus` middleware similarly measures response times in seconds, not milliseconds, and it uses the default Prometheus `DefBuckets` spacing meaning the shortest request we can reasonably measure will be `5ms` and the longest will be `10s`.
+
+That being said, if you have a compelling reason to write your own instrumentation middleware (like having response sizes and latencies that fall outside of the default buckets) or need to track additional metrics in your API that aren't just related to requests, you should now feel empowered to write your own instrumentation middleware for Gin applications.
