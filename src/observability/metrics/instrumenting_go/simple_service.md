@@ -1,6 +1,6 @@
 # Instrumenting a Simple HTTP Service
 
-Imagine you have a service in Golang that exposes some HTTP API routes and you're interested in tracking some metrics pertaining to these routes. Later we'll cover instrumenting more complex services and using instrumentation packages for common frameworks like [Gin](https://github.com/gin-gonic/gin), [Echo](https://github.com/labstack/echo), and [Beego](https://github.com/beego/beego) to add some baseline metrics to existing services without having to manually instrument our handlers.
+Imagine you have a service in Golang that exposes some HTTP API routes and you're interested in tracking some metrics pertaining to these routes. Later we'll cover instrumenting more complex services and using instrumentation packages for common frameworks like [Gin](https://github.com/gin-gonic/gin) and [Echo](https://github.com/labstack/echo) to add some baseline metrics to existing services without having to manually instrument our handlers.
 
 ## Defining an Example Service
 
@@ -272,7 +272,7 @@ func handleUsers(w http.ResponseWriter, r *http.Request) {
 }
 ```
 
-You can see here our code is beginning to look like it needs some refactoring, this is where frameworks like [Gin](https://github.com/gin-gonic/gin), [Echo](https://github.com/labstack/echo), and [Beego](https://github.com/beego/beego) can be very useful, they provide middleware interfaces that allow you to run handler hooks before and/or after the business logic of a request handler so we could instrument inside a middleware instead.
+You can see here our code is beginning to look like it needs some refactoring, this is where frameworks like [Gin](https://github.com/gin-gonic/gin) and [Echo](https://github.com/labstack/echo) can be very useful, they provide middleware interfaces that allow you to run handler hooks before and/or after the business logic of a request handler so we could instrument inside a middleware instead.
 
 Running the same series of requests as before through our application now gives us the following response on the `/metrics` endpoint:
 
@@ -588,4 +588,4 @@ Our `GET /users 200` requests seem to have both fallen in the `(0.025 - 0.05]` m
 
 If we look at the `sum` and `count` values for each `Histogram` this time around we can see that the `POST` requests each took around `85` microseconds to handle, and the `GET` request took around `41` microseconds to handle. These results validate our analysis and interpretation of the Histogram buckets.
 
-In the next section we'll cover how to instrument more complex APIs that make use of the popular Go microservice routers and frameworks [Gin](https://github.com/gin-gonic/gin), [Echo](https://github.com/labstack/echo), and [Beego](https://github.com/beego/beego), the top three RESTful API frameworks for Go.
+In the next section we'll cover how to instrument more complex APIs that make use of the popular Go microservice routers and frameworks [Gin](https://github.com/gin-gonic/gin) and [Echo](https://github.com/labstack/echo), the two most common RESTful API frameworks for Go.

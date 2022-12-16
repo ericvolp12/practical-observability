@@ -1,6 +1,6 @@
 # API Framework Instrumentation Middleware
 
-In this section we'll cover instrumenting RESTful HTTP APIs built on three common Golang frameworks: [Gin](https://github.com/gin-gonic/gin), [Echo](https://github.com/labstack/echo), and [Beego](https://github.com/beego/beego).
+In this section we'll cover instrumenting RESTful HTTP APIs built on two common Golang frameworks: [Gin](https://github.com/gin-gonic/gin) and [Echo](https://github.com/labstack/echo).
 
 Middleware is a term used to describe functions that run before, during, or after the processing of requests for an API.
 
@@ -12,7 +12,7 @@ func MyMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Everything above `c.Next()` will run before the route handler is called
         // To start with, the gin.Context will only hold request info
-        
+
 		// Save the start time for request processing
 		t := time.Now()
 
