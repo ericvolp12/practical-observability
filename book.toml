@@ -6,6 +6,7 @@ src = "src"
 title = "IDE Knowledgebase"
 [output.html]
 mathjax-support = true
+no-section-label = true
 
 [output.html.fold]
 enable = true    # whether or not to enable section folding
