@@ -12,7 +12,8 @@ This book is deployed as a draft in GCS for now:
 
 | **Environment** | **Book Link**                                                                        |
 | --------------- | ------------------------------------------------------------------------------------ |
-| Draft           | [Practical Observability](https://storage.googleapis.com/ericv-o11y-book/index.html) |
+| GCS             | [Practical Observability](https://storage.googleapis.com/ericv-o11y-book/index.html) |
+| GH Pages        | [Practical Observability](https://book.ericv.me/)                                    |
 
 ## Development
 
