@@ -6,6 +6,10 @@ on:
       - main
   pull_request:
 
+permissions:
+  contents: read
+  pull-requests: write
+
 jobs:
   deploy:
     runs-on: ubuntu-20.04
