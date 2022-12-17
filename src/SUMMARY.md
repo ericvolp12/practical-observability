@@ -12,4 +12,3 @@
         - [Middleware](observability/metrics/instrumenting_go/middlewares.md)
           - [Gin](observability/metrics/instrumenting_go/gin.md)
           - [Echo](observability/metrics/instrumenting_go/echo.md)
-- [Local Development](localdev/localdev.md)

@@ -32,12 +32,5 @@ Derived metrics, when graphed, make it easy to visually pattern match to find ou
 
 As engineers, we track base metrics in our systems and expose them for collection regularly so that our observability platform can record the change over time of these base metrics. We pick base metrics that provide measurable truth of the state of the system using absolute values where possible. With a large enough pool of base metrics, we can generate dozens of derived metrics that interpret the base metrics _in context_, making it clear to the viewer both _what_ is being measured and _why_ it is important.
 
-
-## What _should_ I record with Metrics?
-
-## Pushing Metrics
-
-## How to Produce Metrics via Prometheus
-
 [^1]: Lots of content for these docs is inspired and sometimes directly drawn from Charity Majors, Liz Fong-Jones, and George Miranda's book, ["Observability Engineering"](https://info.honeycomb.io/observability-engineering-oreilly-book-2022)
 

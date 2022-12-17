@@ -118,3 +118,4 @@ func quantile(q float64, values vectorByValueHeap) float64 {
 
 Now let's put these functions into practice and learn a bit about our example metric, `process_open_fds`.
 
+TODO: write about querying Gauge metrics

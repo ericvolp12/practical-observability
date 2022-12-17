@@ -1,8 +1,8 @@
 # Labels
 
-In most metrics systems, metrics are stored as multi-dimensional time series where the primary dimension is the actual metric value at a given time.
+In most metrics systems, metrics are stored as multi-dimensional time series where the primary dimension is the observed value at a given time.
 
-Labels are additional categorical dimensions for a metric that allow you to differentiate values by some property.
+Labels are additional categorical dimensions for a metric that allow you to differentiate observations by some property.
 
 Example of labels for metrics are as follows:
 

@@ -3,7 +3,7 @@ authors = ["Eric Volpert"]
 language = "en"
 multilingual = false
 src = "src"
-title = "IDE Knowledgebase"
+title = "Practical Observability"
 [output.html]
 mathjax-support = true
 no-section-label = true
