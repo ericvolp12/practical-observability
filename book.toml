@@ -8,7 +8,6 @@ title = "Practical Observability"
 [output.html]
 mathjax-support = true
 no-section-label = true
-theme = "ayu"
 default-theme = "ayu"
 preferred-dark-theme = "ayu"
 
