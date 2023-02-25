@@ -48,7 +48,7 @@ Below is a list of a few of the functions we can use to better understand what o
 
 There are a few others available to us but for the purposes of this chapter we'll explore the above five functions in a practical scenario.
 
-### The Quantile Function
+## The Quantile Function
 
 The [Quantile Function](https://en.wikipedia.org/wiki/Quantile_function) is a commonly used function in probability theory and statistics but I am neither a statistician or probabilist.
 
@@ -114,7 +114,7 @@ func quantile(q float64, values vectorByValueHeap) float64 {
 }
 ```
 
-### Querying Gauge Metrics
+## Querying Gauge Metrics
 
 Now let's put these functions into practice and learn a bit about our example metric, `process_open_fds`.
 

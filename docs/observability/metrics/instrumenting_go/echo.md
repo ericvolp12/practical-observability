@@ -260,14 +260,15 @@ Let's break down the histograms we got back from Echo's Prometheus middleware:
 
 We see a request latency histogram for each of our `status`, `method`, `path` combinations similar to the one we created previously, but note that these seem to be using the `DefBuckets` for bucket delineations and `seconds` as the measured value.
 
-> **Review of `DefBuckets`**
-> ```go
-> // DefBuckets are the default Histogram buckets. The default buckets are
-> // tailored to broadly measure the response time (in seconds) of a network
-> // service. Most likely, however, you will be required to define buckets
-> // customized to your use case.
-> var DefBuckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
-> ```
+::: tip **Review of `DefBuckets`**
+```go
+// DefBuckets are the default Histogram buckets. The default buckets are
+// tailored to broadly measure the response time (in seconds) of a network
+// service. Most likely, however, you will be required to define buckets
+// customized to your use case.
+var DefBuckets = []float64{.005, .01, .025, .05, .1, .25, .5, 1, 2.5, 5, 10}
+```
+:::
 
 All of our requests, being faster than 5 milliseconds, are counted in the smallest latency buckets and we don't have good precision where it counts here. Review the [Tuning Bucket Selection](simple_service.md#assessing-performance-and-tuning-histogram-bucket-selection) section for a discussion on why and how we want our requests to fall somewhere in the middle of our bucket range. Without the use of custom instrumentation middleware, we won't be able to track our quick response timings precisely.
 
