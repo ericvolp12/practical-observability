@@ -12,7 +12,7 @@ Example of labels for metrics are as follows:
 | Latency of handling an HTTP Request    | Status code of the HTTP response                      |
 | Number of requests served by a service | Path requested by the user (not including parameters) |
 
-#### Label Cardinality
+## Label Cardinality
 
 Each metric can have any number of Labels, but for each unique value of a Label, your metrics system will need to create and maintain a whole new time series to track the Label-specific dimension of the metric.
 
@@ -22,9 +22,9 @@ When adding a second label like `Kubernetes Pod Name for each instance of the sy
 
 You can see how a metric with 8 labels each with 5 unique values can quickly add up, and adding just one extra label to a metric with many existing labels quickly becomes unsustainable:
 
-\\[ 1*5^{8} = 32{,}768 \\]
+$$1*5^{8} = 32{,}768$$
 
-\\[ 1*5^{9} = 1{,}953{,}125\\]
+$$1*5^{9} = 1{,}953{,}125$$
 
 > The _uniqueness_ of a label value can be described by the term _cardinality_ where a _high cardinality_ label would have _many_ unique values and a _low cardinality_ label would have _few_ unique values.
 
@@ -32,7 +32,7 @@ An example _high cardinality_ label could be something like `IP Address of Reque
 
 An example _low cardinality_ label could be something like `HTTP Status Group (2xx,3xx,4xx,5xx) of Response` for a web service (cardinality of 4).
 
-#### Metric Dimensionality
+## Metric Dimensionality
 
 > The cost of a metric is generally proportional to its _dimensionality_ where the _dimensionality_ of a metric is the total number of time series required to keep track of the metric and its labels. 
 

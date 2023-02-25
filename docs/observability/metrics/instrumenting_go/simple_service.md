@@ -59,11 +59,12 @@ For example, when a `GET` request is received, it simply encodes the list of use
 
 Metrics we may be interested in tracking include **which routes** are called in a time period, **how many times** they're called, **how long** they take to handle, and **what status code** they return.
 
-> **An Aside on Collectors, Gatherers, and Registries**
-> 
-> The Prometheus client library initializes one or more Metrics [Registries](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#Registry) which are then periodically Collected, Gathered, and Exposed generally via an HTTP route like `/metrics` for scraping via library-managed goroutines.
->
-> For our purposes, we can generally rely on the implicit Global Registry to register our metrics and use the `promauto` package to initialize our Collectors behind the scenes. If you are a power user that wants to dig deeper into building custom Metrics Registries, Collectors or Gatherers, you can take a deeper dive into the docs [here](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#hdr-Advanced_Uses_of_the_Registry).
+::: info An Aside on Collectors, Gatherers, and Registries
+The Prometheus client library initializes one or more Metrics [Registries](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#Registry) which are then periodically Collected, Gathered, and Exposed generally via an HTTP route like `/metrics` for scraping via library-managed goroutines.
+
+For our purposes, we can generally rely on the implicit Global Registry to register our metrics and use the `promauto` package to initialize our Collectors behind the scenes. If you are a power user that wants to dig deeper into building custom Metrics Registries, Collectors or Gatherers, you can take a deeper dive into the docs [here](https://pkg.go.dev/github.com/prometheus/client_golang/prometheus#hdr-Advanced_Uses_of_the_Registry).
+:::
+
 
 We'll import three packages at the top of our file:
 
